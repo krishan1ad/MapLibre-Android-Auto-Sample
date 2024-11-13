@@ -143,3 +143,7 @@ private fun initMap(map: MapboxMap) {
     }
 }
 ```
+
+License
+-------
+[MIT](LICENSE)
