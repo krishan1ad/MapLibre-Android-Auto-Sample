@@ -42,9 +42,9 @@ flowchart TD
 Enough words; Show me the code!
 -------------------------------
 
-We have a class called `CarMapContainer`, this will take car of the MapView code;  
-This is create the MapView, enable textureMode, and add to the WindowManager. 
-This is needed to make sure the MapView will render, and makes sure we can get the Texture later for rendering it onto the Canvas.
+We have a class called `CarMapContainer`, which will take care of the MapView code;  
+This is to create the MapView, enable texture mode, and add to the WindowManager. 
+This is needed to ensure the MapView will render, and we can get the Texture later for rendering it onto the Canvas.
 ```kotlin
 val mapView = MapView(carContext, MapboxMapOptions.createFromAttributes(carContext).apply {
     // Set the textureMode to true, so a TextureView is created
@@ -60,7 +60,7 @@ carContext.windowManager.addView(
 )
 ```
 
-Furthermore, we have a class called `CarMapRenderer`, this will render the Map on the provided Surface.
+Furthermore, we have a class called `CarMapRenderer`, which will render the Map on the provided Surface.
 ```kotlin
 //Make sure to get the Surface by registering as SurfaceCallback
 override fun onCreate(owner: LifecycleOwner) {
@@ -119,7 +119,7 @@ Help! I don't see any MapTiles!
 That's correct, you can fix this by setting your own Style.
 Set this in the following places:
 
-Set you own Style in: `CarMapContainer.kt` (car_common);
+Set your own Style in: `CarMapContainer.kt` (car_common);
 ```kotlin
 getMapAsync {
     mapViewInstance = this
