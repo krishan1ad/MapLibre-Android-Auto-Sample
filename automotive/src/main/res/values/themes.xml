@@ -1,0 +1,4 @@
+<resources>
+
+    <style name="Theme.MapLibreCar" parent="android:Theme.DeviceDefault.NoActionBar" />
+</resources>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MapLibreCar</string>
+    <string name="copyright_openstreetmap">© OpenStreetMap</string>
+    <string name="aaos_no_location_permission_desc">No permission, please enable in settings</string>
+    <string name="aa_no_location_permission_desc">No permission, please enable on phone</string>
+    <string name="aaos_open_location_permission">Open location permission</string>
+    <string name="aa_open_location_permission">Open on phone</string>
+    <string name="close">Close</string>
+    <string name="aa_opened_on_phone">Opened on phone</string>
+    <string name="aa_open_on_phone_manual">Check your phone</string>
+    <string name="permission_granted">Permission granted</string>
+</resources>
