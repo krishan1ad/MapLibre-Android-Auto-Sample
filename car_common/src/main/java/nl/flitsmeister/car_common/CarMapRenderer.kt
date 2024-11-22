@@ -193,37 +193,8 @@ class CarMapRenderer(
     @Synchronized
     override fun onScroll(distanceX: Float, distanceY: Float) {
         Log.v(LOG_TAG, "onScroll distanceX($distanceX) distanceY($distanceY)")
-        val mapInstance = mapContainer.mapViewInstance ?: return
-
-        if (currentTouchPoint == null) {
-            val touchX = mapInstance.measuredWidth / 2f
-            val touchY = mapInstance.measuredHeight / 2f
-            currentTouchPoint = PointF(touchX, touchY).also {
-                mapInstance.onTouchEvent(createMotionEvent(MotionEvent.ACTION_DOWN, it.x, it.y))
-            }
-        } else {
-            currentTouchPoint?.let {
-                currentTouchPoint = PointF(it.x - distanceX, it.y - distanceY).also {
-                    mapInstance.onTouchEvent(createMotionEvent(MotionEvent.ACTION_MOVE, it.x, it.y))
-                }
-            }
-        }
-
-        resetTouchPointJob?.cancel()
-        resetTouchPointJob = runOnMainThread {
-            delay(200)
-            currentTouchPoint?.let {
-                mapContainer.mapViewInstance?.onTouchEvent(
-                    createMotionEvent(
-                        MotionEvent.ACTION_UP,
-                        it.x,
-                        it.y
-                    )
-                )
-            }
-            currentTouchPoint = null
-        }
-
+        mapContainer.moveBy(distanceX, distanceY)
+        
     }
 
     override fun onClick(x: Float, y: Float) {
@@ -236,15 +207,6 @@ class CarMapRenderer(
         super.onFling(velocityX, velocityY)
         // We don't need to implement onFling since the MapView does this for us
     }
-
-    private fun createMotionEvent(event: Int, x: Float, y: Float) = MotionEvent.obtain(
-        SystemClock.uptimeMillis(),
-        SystemClock.uptimeMillis(),
-        event,
-        x,
-        y,
-        0
-    )
 
     fun generateZoomGesture(
         startTime: Long, ifMove: Boolean, startPoint1: PointF,
