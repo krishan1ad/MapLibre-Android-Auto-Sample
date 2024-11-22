@@ -81,20 +81,16 @@ class CarMapRenderer(
         Log.v(LOG_TAG, "CarMapRenderer.onSurfaceAvailable")
         this.surfaceContainer = surfaceContainer
         mapContainer.setSurfaceSize(surfaceContainer.width, surfaceContainer.height)
-
-        runOnMainThread {
-        // Start drawing the map on the android auto surface
-            uiHandler.removeCallbacksAndMessages(null)
-            uiHandler.post { drawOnSurfaceRecursive() }
+        mapContainer.mapViewInstance?.apply {
+            addOnDidBecomeIdleListener { drawOnSurface() }
+            addOnWillStartRenderingFrameListener {
+                drawOnSurface()
+            }
         }
-    }
-
-    private fun drawOnSurfaceRecursive() {
-        val drawingStart = SystemClock.elapsedRealtime()
-        drawOnSurface()
-        val drawingDelay =
-            max(DRAWING_INTERVAL - (SystemClock.elapsedRealtime() - drawingStart), 0L)
-        uiHandler.postDelayed(::drawOnSurfaceRecursive, drawingDelay)
+        runOnMainThread {
+            // Start drawing the map on the android auto surface
+            drawOnSurface()
+        }
     }
 
     private fun drawOnSurface() {
