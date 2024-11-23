@@ -7,7 +7,6 @@ import android.graphics.Rect
 import android.graphics.Typeface
 import android.os.Handler
 import android.os.Looper
-import android.os.SystemClock
 import android.util.Log
 import android.view.MotionEvent
 import android.view.TextureView
@@ -20,10 +19,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import com.mapbox.mapboxsdk.maps.MapView
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import nl.flitsmeister.car_common.extentions.appManager
 import nl.flitsmeister.car_common.extentions.runOnMainThread
-import kotlin.math.max
 
 class CarMapRenderer(
     private val carContext: CarContext,
@@ -189,7 +186,7 @@ class CarMapRenderer(
     @Synchronized
     override fun onScroll(distanceX: Float, distanceY: Float) {
         Log.v(LOG_TAG, "onScroll distanceX($distanceX) distanceY($distanceY)")
-        mapContainer.moveBy(distanceX, distanceY)
+        mapContainer.scrollBy(distanceX, distanceY)
         
     }
 

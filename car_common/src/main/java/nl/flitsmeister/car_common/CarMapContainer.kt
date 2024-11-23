@@ -33,7 +33,7 @@ class CarMapContainer(
     var surfaceWidth: Int? = null
     var surfaceHeight: Int? = null
 
-    fun moveBy(x: Float, y: Float) {
+    fun scrollBy(x: Float, y: Float) {
         mapboxMapInstance?.scrollBy(-x, -y, 0  )
     }
     
