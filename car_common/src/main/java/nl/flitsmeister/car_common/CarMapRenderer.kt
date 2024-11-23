@@ -18,7 +18,6 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import com.mapbox.mapboxsdk.maps.MapView
-import kotlinx.coroutines.Job
 import nl.flitsmeister.car_common.extentions.appManager
 import nl.flitsmeister.car_common.extentions.runOnMainThread
 
@@ -45,9 +44,6 @@ class CarMapRenderer(
     // The last known stable area
     private var lastKnownStableArea = Rect()
     private var lastKnownVisibleArea = Rect()
-
-    private var currentTouchPoint: PointF? = null
-    private var resetTouchPointJob: Job? = null
 
     init {
         serviceLifecycle.addObserver(this)
@@ -327,8 +323,6 @@ class CarMapRenderer(
     }
 
     companion object {
-        private var FPS_LIMIT = 30 //TODO: Maybe not hardcode this
-        private var DRAWING_INTERVAL = (1000 / FPS_LIMIT).toLong()
         const val LOG_TAG = "CarMapRenderer"
     }
 }
