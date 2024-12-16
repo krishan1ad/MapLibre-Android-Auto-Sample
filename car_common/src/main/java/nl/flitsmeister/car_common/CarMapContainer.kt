@@ -1,10 +1,14 @@
 package nl.flitsmeister.car_common
 
+import android.animation.Animator
+import android.animation.ValueAnimator
 import android.graphics.Paint
 import android.graphics.PixelFormat
+import android.graphics.PointF
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
+import android.view.animation.DecelerateInterpolator
 import androidx.car.app.CarContext
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
@@ -12,10 +16,12 @@ import androidx.lifecycle.LifecycleOwner
 import nl.flitsmeister.car_common.extentions.runOnMainThread
 import nl.flitsmeister.car_common.extentions.windowManager
 import org.maplibre.android.MapLibre
+import org.maplibre.android.constants.MapLibreConstants
 import org.maplibre.android.maps.MapLibreMap
 import org.maplibre.android.maps.MapLibreMapOptions
 import org.maplibre.android.maps.MapView
 import org.maplibre.android.maps.Style
+import kotlin.math.ln
 
 class CarMapContainer(
     private val carContext: CarContext, lifecycle: Lifecycle
@@ -33,10 +39,71 @@ class CarMapContainer(
     var surfaceWidth: Int? = null
     var surfaceHeight: Int? = null
 
+    private var scaleAnimator: Animator? = null
+
+
     fun scrollBy(x: Float, y: Float) {
-        mapLibreMapInstance?.scrollBy(-x, -y, 0  )
+        mapLibreMapInstance?.scrollBy(-x, -y, 0)
     }
-    
+
+    private fun createScaleAnimator(
+        currentZoom: Double, zoomAddition: Double,
+        animationFocalPoint: PointF?,
+    ): Animator {
+        val animator =
+            ValueAnimator.ofFloat(currentZoom.toFloat(), (currentZoom + zoomAddition).toFloat())
+        animator.apply {
+            duration = MapLibreConstants.ANIMATION_DURATION.toLong()
+            interpolator = DecelerateInterpolator()
+            addUpdateListener { animation ->
+                animationFocalPoint?.let {
+                    mapLibreMapInstance?.setZoom(
+                        (animation.animatedValue as Float).toDouble(),
+                        it, 0
+                    )
+                }
+            }
+        }
+        return animator
+    }
+
+    private fun doubleClickZoomWithAnimation(zoomFocalPoint: PointF?) {
+        cancelCurrentAnimator(scaleAnimator)
+        val currentZoom = mapLibreMapInstance?.zoom
+        currentZoom?.let {
+            scaleAnimator = createScaleAnimator(
+                it,
+                1.0,
+                zoomFocalPoint
+            )
+            scaleAnimator!!.start()
+        }
+    }
+
+    private fun cancelCurrentAnimator(animator: Animator?) {
+        if (animator != null && animator.isStarted) {
+            animator.cancel()
+        }
+    }
+
+    fun onScale(focusX: Float, focusY: Float, scaleFactor: Float) {
+        if (scaleFactor == DOUBLE_CLICK_FACTOR) {
+            doubleClickZoomWithAnimation(PointF(focusX, focusY))
+            return
+        }
+        val currentZoomLevel = mapLibreMapInstance?.zoom
+
+        // Calculate the additional zoom level based on the scale factor.
+        val zoomAdditional =
+            (ln(
+                scaleFactor.toDouble()
+            ) / ln(Math.PI / 2)) * MapLibreConstants.ZOOM_RATE
+
+        currentZoomLevel?.let {
+            mapLibreMapInstance?.setZoom(it + zoomAdditional, PointF(focusX, focusY), 0)
+        }
+    }
+
     /**
      * This function is called when the surface is created, to update the mapview with the surface sizes
      */
@@ -68,7 +135,8 @@ class CarMapContainer(
                     mapLibreMapInstance = it
                     it.setStyle(
                         //TODO: Set your own style here
-                        Style.Builder().fromJson(ResourceUtils.readRawResource(carContext, R.raw.local_style))
+                        Style.Builder()
+                            .fromJson(ResourceUtils.readRawResource(carContext, R.raw.local_style))
                     )
                 }
             }
@@ -108,5 +176,6 @@ class CarMapContainer(
 
     companion object {
         const val LOG_TAG = "CarMapContainer"
+        const val DOUBLE_CLICK_FACTOR = 2.0F
     }
 }
