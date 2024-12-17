@@ -142,24 +142,26 @@ class CarMapRenderer(
     }
 
     override fun zoomInFromButton() {
-        onScale(-1f, -1f,-1f)
+        val centerX = surfaceContainer?.width?.toFloat()?.div(2) ?: -1f
+        val centerY = surfaceContainer?.height?.toFloat()?.div(2) ?: -1f
+        onScale(centerX, centerY, CarMapContainer.DOUBLE_CLICK_FACTOR)
     }
 
     override fun zoomOutFromButton() {
-        onScale(-1f, -1f,1f)
+        val centerX = surfaceContainer?.width?.toFloat()?.div(2) ?: -1f
+        val centerY = surfaceContainer?.height?.toFloat()?.div(2) ?: -1f
+        onScale(centerX, centerY, -CarMapContainer.DOUBLE_CLICK_FACTOR)
     }
 
     //Map interactivity
     override fun onScale(focusX: Float, focusY: Float, scaleFactor: Float) {
         mapContainer.onScale(focusX, focusY, scaleFactor)
-
     }
 
     @Synchronized
     override fun onScroll(distanceX: Float, distanceY: Float) {
         Log.v(LOG_TAG, "onScroll distanceX($distanceX) distanceY($distanceY)")
         mapContainer.scrollBy(distanceX, distanceY)
-
     }
 
     override fun onClick(x: Float, y: Float) {
