@@ -47,7 +47,8 @@ class CarMapContainer(
     }
 
     private fun createScaleAnimator(
-        currentZoom: Double, zoomAddition: Double,
+        currentZoom: Double,
+        zoomAddition: Double,
         animationFocalPoint: PointF?,
     ): Animator {
         val animator =
@@ -67,13 +68,13 @@ class CarMapContainer(
         return animator
     }
 
-    private fun doubleClickZoomWithAnimation(zoomFocalPoint: PointF?) {
+    private fun doubleClickZoomWithAnimation(zoomFocalPoint: PointF?, isZoomIn: Boolean) {
         cancelCurrentAnimator(scaleAnimator)
         val currentZoom = mapLibreMapInstance?.zoom
         currentZoom?.let {
             scaleAnimator = createScaleAnimator(
                 it,
-                1.0,
+                if (isZoomIn) 1.0 else -1.0,
                 zoomFocalPoint
             )
             scaleAnimator?.start()
@@ -88,7 +89,11 @@ class CarMapContainer(
 
     fun onScale(focusX: Float, focusY: Float, scaleFactor: Float) {
         if (scaleFactor == DOUBLE_CLICK_FACTOR) {
-            doubleClickZoomWithAnimation(PointF(focusX, focusY))
+            doubleClickZoomWithAnimation(PointF(focusX, focusY), true)
+            return
+        }
+        if (scaleFactor == -DOUBLE_CLICK_FACTOR) {
+            doubleClickZoomWithAnimation(PointF(focusX, focusY), false)
             return
         }
         val currentZoomLevel = mapLibreMapInstance?.zoom
