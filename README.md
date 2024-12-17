@@ -46,7 +46,7 @@ We have a class called `CarMapContainer`, which will take care of the MapView co
 This is to create the MapView, enable texture mode, and add to the WindowManager. 
 This is needed to ensure the MapView will render, and we can get the Texture later for rendering it onto the Canvas.
 ```kotlin
-val mapView = MapView(carContext, MapboxMapOptions.createFromAttributes(carContext).apply {
+val mapView = MapView(carContext, MapLibreMapOptions.createFromAttributes(carContext).apply {
     // Set the textureMode to true, so a TextureView is created
     // We can extract this TextureView to draw on the Android Auto surface
     textureMode(true)
@@ -74,25 +74,24 @@ override fun onCreate(owner: LifecycleOwner) {
 }
 
 //In onSurfaceAvailable, we get the Surface onto which we need to draw the map
-override fun onSurfaceAvailable(surfaceContainer: SurfaceContainer) {
-    Log.v(LOG_TAG, "CarMapRenderer.onSurfaceAvailable")
-    this.surfaceContainer = surfaceContainer
-    mapContainer.setSurfaceSize(surfaceContainer.width, surfaceContainer.height)
 
-    runOnMainThread {
-        // Start drawing the map on the android auto surface
-        uiHandler.removeCallbacksAndMessages(null)
-        uiHandler.post { drawOnSurfaceRecursive() }
+    override fun onSurfaceAvailable(surfaceContainer: SurfaceContainer) {
+        Log.v(LOG_TAG, "CarMapRenderer.onSurfaceAvailable")
+        this.surfaceContainer = surfaceContainer
+        mapContainer.setSurfaceSize(surfaceContainer.width, surfaceContainer.height)
+
+        // // Start rendering the map on the Android Auto surface when any behavior changes are detected in the map.
+        mapContainer.mapViewInstance?.apply {
+            addOnDidBecomeIdleListener { drawOnSurface() }
+            addOnWillStartRenderingFrameListener {
+                drawOnSurface()
+            }
+        }
+        runOnMainThread {
+            // Start drawing the map on the android auto surface
+            drawOnSurface()
+        }
     }
-}
-
-//30 times a second, we draw the Map onto the Surface
-private fun drawOnSurfaceRecursive() {
-    val drawingStart = SystemClock.elapsedRealtime()
-    drawOnSurface()
-    val drawingDelay = max(DRAWING_INTERVAL - (SystemClock.elapsedRealtime() - drawingStart), 0L)
-    uiHandler.postDelayed(::drawOnSurfaceRecursive, drawingDelay)
-}
 
 //Using a canvas, draw the map
 private fun drawOnSurface() {
@@ -123,7 +122,7 @@ Set your own Style in: `CarMapContainer.kt` (car_common);
 ```kotlin
 getMapAsync {
     mapViewInstance = this
-    mapboxMapInstance = it
+    mapLibreMapInstance = it
     it.setStyle(
         //TODO: Set your own style here
         Style.Builder().fromJson(ResourceUtils.readRawResource(carContext, R.raw.local_style))
@@ -132,7 +131,7 @@ getMapAsync {
 ```
 And in `MainActivity` (app);
 ```kotlin
-private fun initMap(map: MapboxMap) {
+private fun initMap(map: MapLibreMap) {
     try {
         map.setStyle(
             //TODO: Set your own style here!
@@ -147,3 +146,13 @@ private fun initMap(map: MapboxMap) {
 License
 -------
 [MIT](LICENSE)
+
+Contributor
+--------
+[Flitsmeister](https://flitsmeister.nl)
+
+[MapLibre](https://maplibre.org)
+
+<a href="https://maps.vietmap.vn">
+<img src="https://bizweb.dktcdn.net/100/415/690/themes/804206/assets/logo.png?1731986518084" alt="VietMap" width="100"/>
+</a>
