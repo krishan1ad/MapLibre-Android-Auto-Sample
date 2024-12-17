@@ -76,7 +76,7 @@ class CarMapContainer(
                 1.0,
                 zoomFocalPoint
             )
-            scaleAnimator!!.start()
+            scaleAnimator?.start()
         }
     }
 
