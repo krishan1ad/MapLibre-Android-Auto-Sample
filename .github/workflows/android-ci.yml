@@ -1,0 +1,39 @@
+name: Android CI
+
+on:
+  push:
+    # run on pushes to the main branch
+    branches: 
+      - main
+
+  pull_request: 
+    # run on all pr's regardless of branch name
+    branches: 
+      - "*"
+
+concurrency:
+  # cancel jobs on PRs only
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: set up JDK 11
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: gradle
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    - name: Build with Gradle
+      run: ./gradlew build
+    - name: Run tests
+      run: ./gradlew test --stacktrace
