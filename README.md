@@ -143,6 +143,10 @@ private fun initMap(map: MapLibreMap) {
 }
 ```
 
+Contributing
+------------
+We welcome contributions to this project. Please read the [Contributing Guidelines](CONTRIBUTING.md) for more information.
+
 License
 -------
 [MIT](LICENSE)
@@ -156,3 +160,5 @@ Contributor
 <a href="https://maps.vietmap.vn">
 <img src="https://bizweb.dktcdn.net/100/415/690/themes/804206/assets/logo.png?1731986518084" alt="VietMap" width="100"/>
 </a>
+
+Copyright (c) 2024 MapLibre contributors
