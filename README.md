@@ -169,4 +169,4 @@ Contributor
 <img src="https://bizweb.dktcdn.net/100/415/690/themes/804206/assets/logo.png?1731986518084" alt="VietMap" width="100"/>
 </a>
 
-Copyright (c) 2024 MapLibre contributors
+Copyright (c) 2025 MapLibre contributors
