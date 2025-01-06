@@ -143,6 +143,14 @@ private fun initMap(map: MapLibreMap) {
 }
 ```
 
+Main MapLibre website
+---------------------
+https://maplibre.org/
+
+Discussing
+----------
+This project can be discussed on the OSM-US Slack, in channel #maplibre-android, invite link: https://slack.openstreetmap.us/
+
 Contributing
 ------------
 We welcome contributions to this project. Please read the [Contributing Guidelines](CONTRIBUTING.md) for more information.
