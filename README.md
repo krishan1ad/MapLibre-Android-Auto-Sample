@@ -112,10 +112,10 @@ private fun drawMapOnCanvas(mapView: MapView, canvas: Canvas) {
 
 ```
 
-Help! I don't see any MapTiles!
--------------------------------
+Other MapTiles / Style
+----------------------
 
-That's correct, you can fix this by setting your own Style.
+You can fix this by setting your own Style.
 Set this in the following places:
 
 Set your own Style in: `CarMapContainer.kt` (car_common);
@@ -125,7 +125,7 @@ getMapAsync {
     mapLibreMapInstance = it
     it.setStyle(
         //TODO: Set your own style here
-        Style.Builder().fromJson(ResourceUtils.readRawResource(carContext, R.raw.local_style))
+        Style.Builder().fromUri("https://demotiles.maplibre.org/style.json")
     )
 }
 ```
@@ -135,7 +135,7 @@ private fun initMap(map: MapLibreMap) {
     try {
         map.setStyle(
             //TODO: Set your own style here!
-            Style.Builder().fromJson(ResourceUtils.readRawResource(this, R.raw.local_style))
+            Style.Builder().fromUri("https://demotiles.maplibre.org/style.json")
         )
     } catch (e: Exception) {
         Log.e("MapLibreCar", "Error setting local style", e)

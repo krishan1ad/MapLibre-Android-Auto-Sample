@@ -11,7 +11,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import nl.flitsmeister.car_common.R
-import nl.flitsmeister.car_common.ResourceUtils
 import nl.flitsmeister.maplibrecar.ui.theme.MapLibreCarTheme
 import org.maplibre.android.MapLibre
 import org.maplibre.android.camera.CameraPosition
@@ -61,7 +60,7 @@ class MainActivity : ComponentActivity() {
         try {
             map.setStyle(
                 //TODO: Set your own style here!
-                Style.Builder().fromJson(ResourceUtils.readRawResource(this, R.raw.local_style))
+                Style.Builder().fromUri("https://demotiles.maplibre.org/style.json")
             )
         } catch (e: Exception) {
             Log.e("MapLibreCar", "Error setting local style", e)

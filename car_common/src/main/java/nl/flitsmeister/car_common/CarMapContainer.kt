@@ -140,8 +140,7 @@ class CarMapContainer(
                     mapLibreMapInstance = it
                     it.setStyle(
                         //TODO: Set your own style here
-                        Style.Builder()
-                            .fromJson(ResourceUtils.readRawResource(carContext, R.raw.local_style))
+                        Style.Builder().fromUri("https://demotiles.maplibre.org/style.json")
                     )
                 }
             }
